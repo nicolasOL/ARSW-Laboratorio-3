@@ -10,6 +10,8 @@ import edu.eci.arsw.cinema.model.CinemaFunction;
 import edu.eci.arsw.cinema.model.Movie;
 import edu.eci.arsw.cinema.persistence.CinemaException;
 import edu.eci.arsw.cinema.persistence.CinemaPersistenceException;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,25 +78,21 @@ public class CinemaServices {
         return cps.getFunctionsbyCinemaAndDate(cinema, date);
     }
     
-    public List<Movie> filterB(String cinema,String date,int emptySeats){
-        List<Movie> m=null;
+    public List<Movie> filterB(String cinema,String date,int emptySeats) throws UnsupportedOperationException{
+        List<Movie> m= new ArrayList<Movie>();
         try{
             m=cps.filterB(cinema, date, emptySeats);
         }catch(CinemaPersistenceException e){
-            System.out.println("Parametros erroneos");
-        }catch(UnsupportedOperationException ex){
-            System.out.println("Parametros erroneos");
+            System.out.println(e.getMessage());
         }
         return m;
     }
-    public List<Movie> filterA(String cinema,String date,String gender){
-        List<Movie> m=null;
+    public List<Movie> filterA(String cinema,String date,String gender) throws UnsupportedOperationException {
+        List<Movie> m= new ArrayList<Movie>();
         try{
             m=cps.filterA(cinema, date, gender);
         }catch(CinemaPersistenceException e){
-            System.out.println("Parametros erroneos");
-        }catch(UnsupportedOperationException ex){
-            System.out.println("Parametros erroneos");
+            System.out.println(e.getMessage());
         }
         return m;
     }

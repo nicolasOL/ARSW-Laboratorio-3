@@ -23,37 +23,50 @@ import java.util.logging.Logger;
  * @author Nicolás
  */
 public class main {
-    public static void main(String a[]) {
-        ApplicationContext ac = new ClassPathXmlApplicationContext("applicationContext.xml");
-        CinemaServices cs = ac.getBean(CinemaServices.class);
-        Cinema c=new Cinema("Cine Prueba", null);
-        cs.addNewCinema(c);
-        Set<Cinema> cines=cs.getAllCinemas();
-        for (Cinema ci : cines){
-            System.out.println(ci.getName());
-        }
-        cs.buyTicket(0, 0, "cinemaX", "2018-12-18 15:30", "The Night");
-        List<CinemaFunction> cineFs=cs.getFunctionsbyCinemaAndDate("cinemaX", "2018-12-18 15:30");
-        for (CinemaFunction ciF : cineFs){
-            System.out.println(ciF.getMovie().getName());
-            System.out.println(ciF.getSeats());
-        }
-        try {
-            System.out.println(cs.getCinemaByName("cinemaX").getName());
-        } catch (CinemaException ex) {
-            System.out.println("Cine no encontrado");
-        }
-        //List<Movie> moviesGenre=cs.filterA("cinemaX", "2018-12-18 15:30", "Horror");
-        List<Movie> moviesSeats=cs.filterB("cinemaX", "2018-12-18 15:30",25);
-        /*
-        for (Movie m:moviesGenre){
-            System.out.println("Peliculas por genero "+m.getName());
-        }*/
-        
-        for (Movie m:moviesSeats){
-            System.out.println("Peliculas por asientos "+m.getName());
-        }
+	public static void main(String a[]) {
+		ApplicationContext ac = new ClassPathXmlApplicationContext("applicationContext.xml");
+		CinemaServices cs = ac.getBean(CinemaServices.class);
+		Cinema c = new Cinema("Cine Prueba", null);
+		cs.addNewCinema(c);
+		Set<Cinema> cines = cs.getAllCinemas();
+		for (Cinema ci : cines) {
+			System.out.println(ci.getName());
+		}
+		cs.buyTicket(0, 0, "cinemaX", "2018-12-18 15:30", "The Night");
+		List<CinemaFunction> cineFs = cs.getFunctionsbyCinemaAndDate("cinemaX", "2018-12-18 15:30");
+		for (CinemaFunction ciF : cineFs) {
+			System.out.println(ciF.getMovie().getName());
+			System.out.println(ciF.getSeats());
+		}
+		try {
+			System.out.println(cs.getCinemaByName("cinemaX").getName());
+		} catch (CinemaException ex) {
+			System.out.println("Cine no encontrado");
+		}
 
-        
-    }
+		// Pruebas con filtros
+		
+		//Filtro A
+
+		try {
+			List<Movie> moviesGenre = cs.filterA("cinemaS", "2018-12-18 15:30", "Horror");
+			for (Movie m : moviesGenre) {
+				System.out.println("Peliculas por genero " + m.getName());
+			}
+		} catch (UnsupportedOperationException ue) {
+
+		}
+
+		// Filtro B
+		try {
+			List<Movie> moviesSeats = cs.filterB("cinemaX", "2018-12-18 15:30", 25);
+
+			for (Movie m : moviesSeats) {
+				System.out.println("Peliculas por asientos " + m.getName());
+			}
+		} catch (UnsupportedOperationException ue) {
+
+		}
+
+	}
 }

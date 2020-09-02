@@ -23,86 +23,88 @@ import org.springframework.stereotype.Service;
  *
  * @author cristian
  */
-@Service("cinemaServicesMemory")
-public class InMemoryCinemaPersistence implements CinemaPersitence{
-    
-    private final Map<String,Cinema> cinemas=new HashMap<>();
+@Service
+public class InMemoryCinemaPersistence implements CinemaPersitence {
 
-    public InMemoryCinemaPersistence() {
-        //load stub data
-        String functionDate = "2018-12-18 15:30";
-        List<CinemaFunction> functions= new ArrayList<>();
-        CinemaFunction funct1 = new CinemaFunction(new Movie("SuperHeroes Movie","Action"),functionDate);
-        CinemaFunction funct2 = new CinemaFunction(new Movie("The Night","Horror"),functionDate);
-        functions.add(funct1);
-        functions.add(funct2);
-        Cinema c=new Cinema("cinemaX",functions);
-        cinemas.put("cinemaX", c);
-    }    
+	private final Map<String, Cinema> cinemas = new HashMap<>();
 
-    @Override
-    public void buyTicket(int row, int col, String cinema, String date, String movieName) throws CinemaException {
-        Cinema c=cinemas.get(cinema);
-        List<CinemaFunction> f=c.getFunctions();
-        for (int i=0;i<f.size();i++){
-            if (f.get(i).getMovie().getName().equals(movieName)){
-                f.get(i).buyTicket(row, col);
-            }
-        }
-        
-    }
+	public InMemoryCinemaPersistence() {
+		// load stub data
+		String functionDate = "2018-12-18 15:30";
+		List<CinemaFunction> functions = new ArrayList<>();
+		CinemaFunction funct1 = new CinemaFunction(new Movie("SuperHeroes Movie", "Action"), functionDate);
+		CinemaFunction funct2 = new CinemaFunction(new Movie("The Night", "Horror"), functionDate);
+		functions.add(funct1);
+		functions.add(funct2);
+		Cinema c = new Cinema("cinemaX", functions);
+		cinemas.put("cinemaX", c);
+	}
 
-    @Override
-    public List<CinemaFunction> getFunctionsbyCinemaAndDate(String cinema, String date) {
-        List<CinemaFunction> cfR = new ArrayList<CinemaFunction>();
-        for(CinemaFunction cf: cinemas.get(cinema).getFunctions()) {
-            if(cf.getDate() == date) {
-                cfR.add(cf);
-                }
-        }
-          return cfR;
-    }
+	@Override
+	public void buyTicket(int row, int col, String cinema, String date, String movieName) throws CinemaException {
+		if(!cinemas.containsKey(cinema)) throw new CinemaException("El cinema "+cinema+" no existe");
+		Cinema c = cinemas.get(cinema);
+		List<CinemaFunction> f = c.getFunctions();
+		for (int i = 0; i < f.size(); i++) {
+			if (f.get(i).getMovie().getName().equals(movieName)) {
+				f.get(i).buyTicket(row, col);
+			}
+		}
 
-    @Override
-    public void saveCinema(Cinema c) throws CinemaPersistenceException {
-        if (cinemas.containsKey(c.getName())){
-            throw new CinemaPersistenceException("The given cinema already exists: "+c.getName());
-        }
-        else{
-            cinemas.put(c.getName(),c);
-        }   
-    }
+	}
 
-    @Override
-    public Cinema getCinema(String name) throws CinemaPersistenceException {
-        return cinemas.get(name);
-    }
-    
-    @Override
-    public Set<Cinema> getAllCinemas() {
-        Set<Cinema> res = new HashSet<Cinema>();
-        for(Cinema c: cinemas.values()) {
-            res.add(c);
-        }
-        return res;
-    }
-    @Override
-    public List<Movie> filterB(String cinema,String date,int emptySeats) throws CinemaPersistenceException{
-        ArrayList<Movie> result=new ArrayList<Movie>();
-        Set<Cinema> c=getAllCinemas();
-        Cinema ci=getCinema(cinema);
-        List<CinemaFunction> fu=ci.getFunctions();
-        for (CinemaFunction fun:fu){
-            if (fun.seatsAvailability()>emptySeats && fun.getDate().equals(date)){
-                result.add(fun.getMovie());
-            }
-        }        
-        return result;
-    }
-    
-        @Override
-    public List<Movie> filterA(String cinema, String date, String gender) throws CinemaPersistenceException {
-        throw new UnsupportedOperationException("No se tiene implementada.");
-    }
+	@Override
+	public List<CinemaFunction> getFunctionsbyCinemaAndDate(String cinema, String date) {
+		List<CinemaFunction> cfR = new ArrayList<CinemaFunction>();
+		for (CinemaFunction cf : cinemas.get(cinema).getFunctions()) {
+			if (cf.getDate() == date) {
+				cfR.add(cf);
+			}
+		}
+		return cfR;
+	}
+
+	@Override
+	public void saveCinema(Cinema c) throws CinemaPersistenceException {
+		if (cinemas.containsKey(c.getName())) {
+			throw new CinemaPersistenceException("The given cinema already exists: " + c.getName());
+		} else {
+			cinemas.put(c.getName(), c);
+		}
+	}
+
+	@Override
+	public Cinema getCinema(String name) throws CinemaPersistenceException {
+		return cinemas.get(name);
+	}
+
+	@Override
+	public Set<Cinema> getAllCinemas() {
+		Set<Cinema> res = new HashSet<Cinema>();
+		for (Cinema c : cinemas.values()) {
+			res.add(c);
+		}
+		return res;
+	}
+
+	@Override
+	public List<Movie> filterA(String cinema, String date, String gender) throws CinemaPersistenceException {
+		throw new UnsupportedOperationException("No se tiene implementado el filtro A.");
+	}
+
+	@Override
+	public List<Movie> filterB(String cinema, String date, int emptySeats) throws CinemaPersistenceException {
+		if(!cinemas.containsKey(cinema)) throw new CinemaPersistenceException("El cinema "+cinema+" no existe");
+		ArrayList<Movie> result = new ArrayList<Movie>();
+		Set<Cinema> c = getAllCinemas();
+		Cinema ci = getCinema(cinema);
+		List<CinemaFunction> fu = ci.getFunctions();
+		for (CinemaFunction fun : fu) {
+			if (fun.seatsAvailability() > emptySeats && fun.getDate().equals(date)) {
+				result.add(fun.getMovie());
+			}
+		}
+		return result;
+	}
 
 }
