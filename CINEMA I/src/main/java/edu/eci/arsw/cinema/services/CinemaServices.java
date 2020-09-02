@@ -7,6 +7,7 @@ package edu.eci.arsw.cinema.services;
 
 import edu.eci.arsw.cinema.model.Cinema;
 import edu.eci.arsw.cinema.model.CinemaFunction;
+import edu.eci.arsw.cinema.model.Movie;
 import edu.eci.arsw.cinema.persistence.CinemaException;
 import edu.eci.arsw.cinema.persistence.CinemaPersistenceException;
 import java.util.List;
@@ -35,11 +36,15 @@ public class CinemaServices {
 	}
     
     public void addNewCinema(Cinema c){
-        
+        try {
+            cps.saveCinema(c);
+        } catch (CinemaPersistenceException ex) {
+            Logger.getLogger(CinemaServices.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public Set<Cinema> getAllCinemas(){
-        return null;
+        return cps.getAllCinemas();        
     }
     
     /**
@@ -69,6 +74,29 @@ public class CinemaServices {
     
     public List<CinemaFunction> getFunctionsbyCinemaAndDate(String cinema, String date) {
         return cps.getFunctionsbyCinemaAndDate(cinema, date);
+    }
+    
+    public List<Movie> filterB(String cinema,String date,int emptySeats){
+        List<Movie> m=null;
+        try{
+            m=cps.filterB(cinema, date, emptySeats);
+        }catch(CinemaPersistenceException e){
+            System.out.println("Parametros erroneos");
+        }catch(UnsupportedOperationException ex){
+            System.out.println("Parametros erroneos");
+        }
+        return m;
+    }
+    public List<Movie> filterA(String cinema,String date,String gender){
+        List<Movie> m=null;
+        try{
+            m=cps.filterA(cinema, date, gender);
+        }catch(CinemaPersistenceException e){
+            System.out.println("Parametros erroneos");
+        }catch(UnsupportedOperationException ex){
+            System.out.println("Parametros erroneos");
+        }
+        return m;
     }
 
 

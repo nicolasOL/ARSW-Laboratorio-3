@@ -7,7 +7,9 @@ package edu.eci.arsw.cinema.persistence;
 
 import edu.eci.arsw.cinema.model.Cinema;
 import edu.eci.arsw.cinema.model.CinemaFunction;
+import edu.eci.arsw.cinema.model.Movie;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -51,4 +53,13 @@ public interface CinemaPersitence {
      */
     public Cinema getCinema(String name) throws CinemaPersistenceException;
     
+    /**
+     * 
+     * @return All Cinemas
+     */
+    public Set<Cinema> getAllCinemas();
+    
+    
+    public List<Movie> filterB(String cinema,String date,int emptySeats) throws CinemaPersistenceException;
+    public List<Movie> filterA(String cinema,String date,String gender) throws CinemaPersistenceException;
 }

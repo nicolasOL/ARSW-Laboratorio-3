@@ -13,13 +13,17 @@ import edu.eci.arsw.cinema.persistence.CinemaPersistenceException;
 import edu.eci.arsw.cinema.persistence.CinemaPersitence;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author cristian
  */
+@Service("cinemaServicesMemory")
 public class InMemoryCinemaPersistence implements CinemaPersitence{
     
     private final Map<String,Cinema> cinemas=new HashMap<>();
@@ -50,7 +54,13 @@ public class InMemoryCinemaPersistence implements CinemaPersitence{
 
     @Override
     public List<CinemaFunction> getFunctionsbyCinemaAndDate(String cinema, String date) {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        List<CinemaFunction> cfR = new ArrayList<CinemaFunction>();
+        for(CinemaFunction cf: cinemas.get(cinema).getFunctions()) {
+            if(cf.getDate() == date) {
+                cfR.add(cf);
+                }
+        }
+          return cfR;
     }
 
     @Override
@@ -66,6 +76,33 @@ public class InMemoryCinemaPersistence implements CinemaPersitence{
     @Override
     public Cinema getCinema(String name) throws CinemaPersistenceException {
         return cinemas.get(name);
+    }
+    
+    @Override
+    public Set<Cinema> getAllCinemas() {
+        Set<Cinema> res = new HashSet<Cinema>();
+        for(Cinema c: cinemas.values()) {
+            res.add(c);
+        }
+        return res;
+    }
+    @Override
+    public List<Movie> filterB(String cinema,String date,int emptySeats) throws CinemaPersistenceException{
+        ArrayList<Movie> result=new ArrayList<Movie>();
+        Set<Cinema> c=getAllCinemas();
+        Cinema ci=getCinema(cinema);
+        List<CinemaFunction> fu=ci.getFunctions();
+        for (CinemaFunction fun:fu){
+            if (fun.seatsAvailability()>emptySeats && fun.getDate().equals(date)){
+                result.add(fun.getMovie());
+            }
+        }        
+        return result;
+    }
+    
+        @Override
+    public List<Movie> filterA(String cinema, String date, String gender) throws CinemaPersistenceException {
+        throw new UnsupportedOperationException("No se tiene implementada.");
     }
 
 }

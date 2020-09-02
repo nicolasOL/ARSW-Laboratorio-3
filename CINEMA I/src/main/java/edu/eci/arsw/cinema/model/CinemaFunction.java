@@ -62,7 +62,15 @@ public class CinemaFunction {
         this.date = date;
     }
     
-    
+    public int seatsAvailability(){
+        int actual=0;
+        for (List<Boolean> s: seats){
+            for (Boolean se:s){
+                if (se.equals(true)) actual++;
+            }
+        }
+        return actual;
+    }
     
     
 }
