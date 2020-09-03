@@ -13,7 +13,7 @@ public class GrammarChecker {
 	public SpellChecker getSpellChecker() {
 		return sc;
 	}
-        @Autowired
+    @Autowired
 	public void setSpellChecker(SpellChecker sc) {
 		this.sc = sc;
 	}
